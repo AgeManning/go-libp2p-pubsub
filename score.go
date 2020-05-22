@@ -21,7 +21,7 @@ type peerStats struct {
 	// expiration time of the score stats for disconnected peers
 	expire time.Time
 
-	// per topc stats
+	// per topic stats
 	topics map[string]*topicStats
 
 	// IP tracking; store as string for easy processing
@@ -48,7 +48,7 @@ type topicStats struct {
 	// mesh message deliveries
 	meshMessageDeliveries float64
 
-	// true if the peer has been enough time in the mesh to activate mess message deliveries
+	// true if the peer has been in the mesh for enough time to activate mesh message deliveries
 	meshMessageDeliveriesActive bool
 
 	// sticky mesh rate failure penalty counter
@@ -109,7 +109,7 @@ const (
 	deliveryUnknown   = iota // we don't know (yet) if the message is valid
 	deliveryValid            // we know the message is valid
 	deliveryInvalid          // we know the message is invalid
-	deliveryIgnored          // we were intructed by the validator to ignore the message
+	deliveryIgnored          // we were instructed by the validator to ignore the message
 	deliveryThrottled        // we can't tell if it is valid because validation throttled
 )
 
@@ -117,7 +117,7 @@ type PeerScoreInspectFn func(map[peer.ID]float64)
 
 // WithPeerScoreInspect is a gossipsub router option that enables peer score debugging.
 // When this option is enabled, the supplied function will be invoked periodically to allow
-// the application to inspec or dump the scores for connected peers.
+// the application to inspect or dump the scores for connected peers.
 // This option must be passed _after_ the WithPeerScore option.
 func WithPeerScoreInspect(inspect PeerScoreInspectFn, period time.Duration) Option {
 	return func(ps *PubSub) error {
@@ -248,8 +248,8 @@ func (ps *peerScore) score(p peer.ID) float64 {
 		// PeerScoreParams.validate).
 		peersInIP := len(ps.peerIPs[ip])
 		if peersInIP > ps.params.IPColocationFactorThreshold {
-			surpluss := float64(peersInIP - ps.params.IPColocationFactorThreshold)
-			p6 := surpluss * surpluss
+			surplus := float64(peersInIP - ps.params.IPColocationFactorThreshold)
+			p6 := surplus * surplus
 			score += p6 * ps.params.IPColocationFactorWeight
 		}
 	}
@@ -352,7 +352,7 @@ func (ps *peerScore) refreshScores() {
 
 			// we don't decay retained scores, as the peer is not active.
 			// this way the peer cannot reset a negative score by simply disconnecting and reconnecting,
-			// unless the retention period has ellapsed.
+			// unless the retention period has elapsed.
 			// similarly, a well behaved peer does not lose its score by getting disconnected.
 			continue
 		}

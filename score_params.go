@@ -9,7 +9,7 @@ import (
 )
 
 type PeerScoreThresholds struct {
-	// GossipThreshold is the score threshold below which gossip propagation is supressed;
+	// GossipThreshold is the score threshold below which gossip propagation is suppressed;
 	// should be negative.
 	GossipThreshold float64
 
@@ -17,8 +17,9 @@ type PeerScoreThresholds struct {
 	// publishing (also applies to fanout and floodsub peers); should be negative and <= GossipThreshold.
 	PublishThreshold float64
 
-	// GraylistThreshold is the score threshold below which message processing is supressed altogether,
-	// implementing an effective graylist according to peer score; should be negative and <= PublisThreshold.
+	// GraylistThreshold is the score threshold below which message processing is suppressed altogether,
+	// implementing an effective graylist according to peer score; should be
+	// negative and <= PublishThreshold.
 	GraylistThreshold float64
 
 	// AcceptPXThreshold is the score threshold below which PX will be ignored; this should be positive
@@ -67,7 +68,7 @@ type PeerScoreParams struct {
 	// is the square of the difference, ie (PeersInSameIP - IPColocationThreshold)^2.
 	// If the number of peers in the same IP is less than the threshold, then the value is 0.
 	// The weight of the parameter MUST be negative, unless you want to disable for testing.
-	// Note: In order to simulate many IPs in a managable manner when testing, you can set the weight to 0
+	// Note: In order to simulate many IPs in a manageable manner when testing, you can set the weight to 0
 	//       thus disabling the IP colocation penalty.
 	IPColocationFactorWeight    float64
 	IPColocationFactorThreshold int
@@ -98,7 +99,7 @@ type TopicScoreParams struct {
 	TopicWeight float64
 
 	// P1: time in the mesh
-	// This is the time the peer has ben grafted in the mesh.
+	// This is the time the peer has been grafted in the mesh.
 	// The value of of the parameter is the time/TimeInMeshQuantum, capped by TimeInMeshCap
 	// The weight of the parameter MUST be positive (or zero to disable).
 	TimeInMeshWeight  float64
@@ -214,7 +215,7 @@ func (p *TopicScoreParams) validate() error {
 
 	// check P2
 	if p.FirstMessageDeliveriesWeight < 0 {
-		return fmt.Errorf("invallid FirstMessageDeliveriesWeight; must be positive (or 0 to disable)")
+		return fmt.Errorf("invalid FirstMessageDeliveriesWeight; must be positive (or 0 to disable)")
 	}
 	if p.FirstMessageDeliveriesWeight != 0 && (p.FirstMessageDeliveriesDecay <= 0 || p.FirstMessageDeliveriesDecay >= 1) {
 		return fmt.Errorf("invalid FirstMessageDeliveriesDecay; must be between 0 and 1")
